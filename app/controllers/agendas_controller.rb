@@ -23,7 +23,7 @@ class AgendasController < ApplicationController
 
   def destroy
     @agenda = Agenda.find(params[:id])
-    if @agenda.user || @agenda.team.owner
+    if (@agenda.user || @agenda.team.owner)
       @agenda.destroy
       redirect_to dashboard_url, notice: I18n.t('views.messages.delete_agenda')
     end
