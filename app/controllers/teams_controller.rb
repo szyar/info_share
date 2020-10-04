@@ -29,6 +29,14 @@ class TeamsController < ApplicationController
     end
   end
 
+  def make_owner
+    @user = User.find(params[:id])
+    @team = Team.find(params[:team_id])
+    @team.owner = @user
+    @team.save
+    redirect_to @team
+  end
+
   def update
     if @team.update(team_params)
       redirect_to @team, notice: I18n.t('views.messages.update_team')
