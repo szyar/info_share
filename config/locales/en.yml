@@ -215,6 +215,7 @@ en:
     pm: pm
   views:
     messages:
+      owner_noti: 'Promoted Succefully'
       create_agenda: 'Successfully created an agenda!'
       delete_agenda: 'The agenda has been deleted! Check your mailbox'
       create_article: 'Successfully created an article!'

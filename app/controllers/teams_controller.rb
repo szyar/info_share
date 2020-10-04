@@ -33,7 +33,9 @@ class TeamsController < ApplicationController
     @user = User.find(params[:id])
     @team = Team.find(params[:team_id])
     @team.owner = @user
-    @team.save
+    if @team.save
+      OwnerMailer.owner_noti_mail(@team, @user).deliver
+    end
     redirect_to @team
   end
 
