@@ -1,7 +1,7 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_team, only: %i[show edit update destroy]
-  before_action :require_same_user, only: [:edit, :update, :destroy]
+  before_action :require_same_user, only: %i[edit update destroy]
 
   def index
     @teams = Team.all
@@ -34,9 +34,7 @@ class TeamsController < ApplicationController
     @user = User.find(params[:id])
     @team = Team.find(params[:team_id])
     @team.owner = @user
-    if @team.save
-      OwnerMailer.owner_noti_mail(@team, @user).deliver
-    end
+    @team.save && OwnerMailer.owner_noti_mail(@team, @user).deliver
     redirect_to @team
   end
 
@@ -69,8 +67,6 @@ class TeamsController < ApplicationController
   end
 
   def require_same_user
-    if current_user != @team.owner
-      redirect_to teams_path, notice: "You can only edit your own teams"
-    end
+    redirect_to teams_path, notice: "You can only edit your own teams" if current_user != @team.owner
   end
 end
