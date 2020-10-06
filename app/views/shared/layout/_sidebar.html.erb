@@ -37,8 +37,10 @@
         <% @working_team.agendas.each do |agenda| %>
           <li class="nav-item has-treeview menu-open">
             <p class="nav-link">
-              <%= agenda.title %> |
-              <%= link_to 'Delete', agenda_path(agenda), method: :delete, data: { confirm: 'Are you sure?' } %>
+              <%= agenda.title %>
+              <% if current_user == agenda.user %>
+                | <%= link_to 'Delete', agenda_path(agenda), method: :delete, data: { confirm: 'Are you sure?' } %>
+              <% end %>
               <i class="right fa fa-angle-left"></i>
             </p>
             <ul class="nav nav-treeview" style="display: block;">
