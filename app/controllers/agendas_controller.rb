@@ -24,10 +24,12 @@ class AgendasController < ApplicationController
   def destroy
     @agenda = Agenda.find(params[:id])
     @owner = @agenda.team.owner
-    @users = @agenda.team.members
-    if current_user == (@agenda.user || @agenda.team.owner)
+    @members = @agenda.team.members
+    if (current_user == @agenda.user) || (current_user == @owner)
       @agenda.destroy
-      AgendaMailer.delete_agenda_mail(@owner, @users, @agenda.title).deliver
+      @members.each do |member|
+        AgendaMailer.with(agenda: @agenda, member: member).delete_agenda_mail.deliver
+      end
       redirect_to dashboard_url, notice: I18n.t('views.messages.delete_agenda')
     else
       redirect_to dashboard_url, notice: I18n.t('views.messages.delete_agenda_restrict')

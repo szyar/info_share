@@ -38,7 +38,7 @@
           <li class="nav-item has-treeview menu-open">
             <p class="nav-link">
               <%= agenda.title %>
-              <% if current_user == agenda.user %>
+              <% if (current_user == agenda.user) || (current_user == agenda.team.owner) %>
                 | <%= link_to 'Delete', agenda_path(agenda), method: :delete, data: { confirm: 'Are you sure?' } %>
               <% end %>
               <i class="right fa fa-angle-left"></i>
