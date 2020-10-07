@@ -1,6 +1,7 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_team, only: %i[show edit update destroy]
+  before_action :require_same_user, only: %i[edit update destroy]
 
   def index
     @teams = Team.all
@@ -29,6 +30,14 @@ class TeamsController < ApplicationController
     end
   end
 
+  def make_owner
+    @user = User.find(params[:id])
+    @team = Team.find(params[:team_id])
+    @team.owner = @user
+    @team.save && OwnerMailer.owner_noti_mail(@team, @user).deliver
+    redirect_to @team
+  end
+
   def update
     if @team.update(team_params)
       redirect_to @team, notice: I18n.t('views.messages.update_team')
@@ -55,5 +64,9 @@ class TeamsController < ApplicationController
 
   def team_params
     params.fetch(:team, {}).permit %i[name icon icon_cache owner_id keep_team_id]
+  end
+
+  def require_same_user
+    redirect_to teams_path, notice: "You can only edit your own teams" if current_user != @team.owner
   end
 end

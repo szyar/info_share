@@ -11,6 +11,12 @@
         <h3 style="color: white;"><%= @working_team.name.truncate(15) %></h3>
       </div>
     </div>
+    <div class="user-panel mt-3 pb-3 mb-3">
+      <div class="info">
+        <h4><%= link_to "MailBox", letter_opener_web_path,
+        target: '_blank' %></h4>
+      </div>
+    </div>
 
     <div class="user-panel mt-3 pb-3 mb-3">
       <div class="info">
@@ -30,13 +36,13 @@
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <% @working_team.agendas.each do |agenda| %>
           <li class="nav-item has-treeview menu-open">
-            <a href="#" class="nav-link">
-              <i class="fa fa-circle-o nav-icon"></i>
-              <p>
-                <%= agenda.title %>
-                <i class="right fa fa-angle-left"></i>
-              </p>
-            </a>
+            <p class="nav-link">
+              <%= agenda.title %>
+              <% if (current_user == agenda.user) || (current_user == agenda.team.owner) %>
+                | <%= link_to 'Delete', agenda_path(agenda), method: :delete, data: { confirm: 'Are you sure?' } %>
+              <% end %>
+              <i class="right fa fa-angle-left"></i>
+            </p>
             <ul class="nav nav-treeview" style="display: block;">
               <% agenda.articles.each do |article| %>
                 <li class="nav-item">
@@ -49,7 +55,7 @@
                 <%= link_to new_agenda_article_path(agenda), class: 'nav-link' do %>
                   <p>+ <%= I18n.t('views.messages.create_article') %></p>
                 <% end %>
-              </li>
+              </li> <br>
             </ul>
           </li>
         <% end %>
